@@ -1,4 +1,3 @@
-// chatgpt_controller.js
 import { configDotenv } from "dotenv";
 import OpenAI from "openai";
 import Prompt from "../model/prompt_model.js";
