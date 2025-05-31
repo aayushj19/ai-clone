@@ -4,6 +4,7 @@ import mongoose from 'mongoose';
 import userRoutes from './routes/user_route.js';
 import promptRoutes from './routes/prompt_user.js';
 import cookieParser from 'cookie-parser';
+import cors from 'cors';
 dotenv.config();
 
 
@@ -14,6 +15,10 @@ const Mongo_URL = process.env.Mongodb_URI;
 // middlewares
 app.use(express.json());
 app.use(cookieParser());
+app.use(cors({
+    origin:"http://localhost:5173",
+    credentials:true
+}))
 // DB connection
 
 await mongoose.connect(Mongo_URL).then(()=>{
