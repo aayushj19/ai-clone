@@ -6,53 +6,53 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const Signup = () => {
-    const [formData, setFormData] = useState({
-        firstName: "",
-        lastName:"",
-        email: "",
-        password: "",
-    })
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+  });
 
-    const [error, setError] = useState("");
-    const [loading, setLoading] = useState(false);
-    const navigate = useNavigate();
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
-    const handleSignup = async()=>{
-        setLoading(true);
-        setError("");
-        try{
-            const {data} = await axios.post("http://localhost:5000/api/v1/user/signup",
-                {
-            firstName:formData.firstName,
-            lastName:formData.lastName,
-            email:formData.email,
-            password:formData.password
-            },
-            {
-            withCredentials: true
+  const handleSignup = async () => {
+    setLoading(true);
+    setError("");
+    try {
+      const { data } = await axios.post(
+        "http://localhost:5000/api/v1/user/signup",
+        {
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          email: formData.email,
+          password: formData.password,
         },
-            )
-             alert(data.message || "Signup successful"); 
-             navigate("/login");
-        } catch(e){
-           const message =  error?.response?.data?.errors || "Invalid credentials";
-           setError(message);
+        {
+          withCredentials: true,
         }
-        finally{
-            setLoading(false);
-        }
+      );
+      alert(data.message || "Signup successful");
+      navigate("/login");
+    } catch (e) {
+      const message = error?.response?.data?.errors || "Invalid credentials";
+      setError(message);
+    } finally {
+      setLoading(false);
     }
+  };
 
-    const handleChange = (e)=>{
-        const value = e.target.value
-        const name = e.target.name
-        console.log(value);
+  const handleChange = (e) => {
+    const value = e.target.value;
+    const name = e.target.name;
+    console.log(value);
 
-        setFormData({
-            ...formData,
-            [name]:value,
-        })
-    }
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-black px-4">
@@ -126,20 +126,29 @@ const Signup = () => {
           and{" "}
           <a className="underline" href="">
             Privacy Policy
-          </a> {" "}
+          </a>{" "}
           .
         </p>
 
         {/* {Signup Button} */}
         <button
-        disabled={loading}
-        onClick={handleSignup} className="w-full bg-[#7a6ff6] hover:bg-[#6c61a6] font-semibold text-white py-3 transition rounded-lg disabled:opacity-50">{loading ? "Signing..." : "Signup"}</button>
+          disabled={loading}
+          onClick={handleSignup}
+          className="w-full bg-[#7a6ff6] hover:bg-[#6c61a6] font-semibold text-white py-3 transition rounded-lg disabled:opacity-50"
+        >
+          {loading ? "Signing..." : "Signup"}
+        </button>
 
         {/* {Links} */}
         <div className="flex justify-between mt-4 text-sm">
           {" "}
-          <a className="text-[#7a6ff6] hover:underline"href=""> Already have an account?</a>
-          <Link className="text-[#7a6ff6] hover:underline" to="/login">Login</Link>
+          <a className="text-[#7a6ff6] hover:underline" href="">
+            {" "}
+            Already have an account?
+          </a>
+          <Link className="text-[#7a6ff6] hover:underline" to="/login">
+            Login
+          </Link>
         </div>
       </div>
     </div>

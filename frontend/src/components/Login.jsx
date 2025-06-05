@@ -4,54 +4,60 @@ import { Eye } from "lucide-react";
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthProvider";
 
 const Login = () => {
-    const [formData, setFormData] = useState({
-        firstName: "",
-        lastName:"",
-        email: "",
-        password: "",
-    })
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
 
-    const [error, setError] = useState("");
-    const [loading, setLoading] = useState(false);
-    const navigate = useNavigate();
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
+  const [, setAuthuser] = useAuth();
 
-    const handlelogin = async()=>{
-        setLoading(true);
-        setError("");
-        try{
-            const {data} = await axios.post("http://localhost:5000/api/v1/user/login",
-            {
-            email:formData.email,
-            password:formData.password
-            },
-            {
-            withCredentials: true
-            },
-        )
-            console.log(data);
-            alert(data.message || "Login successful"); 
-            localStorage.setItem("user_id", JSON.stringify(data.id));
-            localStorage.setItem("token", data.jwt_token);
-            navigate("/");
-        } catch(e){
-           const message =  error?.response?.data?.errors || "Invalid credentials";
-           setError(message);
+  const handlelogin = async () => {
+    setLoading(true);
+    setError("");
+    try {
+      const { data } = await axios.post(
+        "http://localhost:5000/api/v1/user/login",
+        {
+          email: formData.email,
+          password: formData.password,
+        },
+        {
+          withCredentials: true,
         }
-        finally{
-            setLoading(false);
-        }
+      );
+      // setShowPassword(password);
+      console.log(data);
+      alert(data.message || "Login successful");  
+      localStorage.setItem("user", JSON.stringify(data.user));
+      localStorage.setItem("token", data.token);
+      setAuthuser(data.token);
+      // console.log(error);
+      navigate("/");
+    } catch (error) {
+      const message = error?.response?.data?.errors || "Invalid credentials";
+      setError(message);
+      console.log(error);
+      
+    } finally {
+      setLoading(false);
     }
+  };
 
-    const handleChange = (e)=>{
-        const value = e.target.value
-        const name = e.target.name
-        setFormData({
-            ...formData,
-            [name]:value,
-        })
-    }
+  const handleChange = (e) => {
+    const value = e.target.value;
+    const name = e.target.name;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-black px-4">
@@ -77,15 +83,26 @@ const Login = () => {
         <div className="mb-4 mt-2 relative">
           <input
             className="w-full bg-transparent border border-gray-600 rounded-md px-4 py-2 placeholder-gray-400 text-sm focus:outline-none focus:ring-2 focus:ring-[#7a6ff0]"
-            type="password"
+            type= {showPassword ? "text" : "password"}
             name="password"
             placeholder="Password"
             value={formData.password}
             onChange={handleChange}
           />
-          <span className="absolute right-3 top-3 text-gray-400">
+          <span className="absolute right-3 top-3 text-gray-400 cursor-pointer">
             {" "}
-            <Eye size={18} />{" "}
+            {showPassword ? (
+              <Eye className="hover:text-white cursur-pointer"
+                size={18}
+                onClick={() => setShowPassword(!showPassword)}
+              />
+            ) : (
+              <Eye
+                size={18}
+                onClick={() => setShowPassword(!showPassword)}
+              />
+            )}
+            {/* <Eye size={18} />{" "} */}
           </span>
         </div>
 
@@ -101,20 +118,29 @@ const Login = () => {
           and{" "}
           <a className="underline" href="">
             Privacy Policy
-          </a> {" "}
+          </a>{" "}
           .
         </p>
 
         {/* {Signup Button} */}
         <button
-        disabled={loading}
-        onClick={handlelogin} className="w-full bg-[#7a6ff6] hover:bg-[#6c61a6] font-semibold text-white py-3 transition rounded-lg disabled:opacity-50">{loading ? "Logging in..." : "Login"}</button>
+          disabled={loading}
+          onClick={handlelogin}
+          className="w-full bg-[#7a6ff6] hover:bg-[#6c61a6] font-semibold text-white py-3 transition rounded-lg disabled:opacity-50"
+        >
+          {loading ? "Logging in..." : "Login"}
+        </button>
 
         {/* {Links} */}
         <div className="flex justify-between mt-4 text-sm">
           {" "}
-          <a className="text-[#7a6ff6] hover:underline"href=""> Dont have an account?</a>
-          <Link className="text-[#7a6ff6] hover:underline" to="/signup">Signup</Link>
+          <a className="text-[#7a6ff6] hover:underline" href="/signup">
+            {" "}
+            Dont have an account?
+          </a>
+          <Link className="text-[#7a6ff6] hover:underline" to="/signup">
+            Signup
+          </Link>
         </div>
       </div>
     </div>

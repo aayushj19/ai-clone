@@ -10,6 +10,7 @@ const openai = new OpenAI({
 const prompt = async (req, res) => {
   const { content } = req.body;
   const userId = req.userId;
+  console.log(userId);
     
   if (!content || content.trim() === "") {
     return res.status(400).json({ message: "Prompt is required" });
@@ -31,7 +32,7 @@ const prompt = async (req, res) => {
     const aiContent = response.choices[0].message.content;
 
     const aiMessage = await Prompt.create({
-      userId:userId,
+      userId,
       role: "assistant",
       content: aiContent,
     });
